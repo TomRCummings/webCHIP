@@ -8,83 +8,22 @@ cMain: The main window of the emulator; inherits from wxFrame. Keeps track of UI
 #include <fstream>
 #include <time.h>
 #include <chrono>
-#include <wx/wx.h>
-#include <wx/event.h>
-#include <wx/colordlg.h>
-#include <wx/numdlg.h>
-#include <wx/aboutdlg.h>
+#include <map>
+#include <string>
 #include <SDL.h>
 #include "chip8.h"
 #include "Sound/beeper.h"
-#include "GUI/controlPicker.h"
-#include "GUI/memoryViewer.h"
 
-class cMain : public wxFrame {
+class cMain {
 public:
 	explicit cMain();
 	~cMain();
-
-	//Event handling functions
-	//Cleanup when this window closes
-	void onClose(wxCloseEvent& evt);
-	//Stops Chip8, handles state while menu is open
-	void onMenuOpen(wxMenuEvent& evt);
-	//Starts Chip8, handles state when menu closes
-	void onMenuClose(wxMenuEvent& evt);
-	//Displays file picker and passes path to helper function to open a ROM
-	void onOpenROM(wxCommandEvent& evt);
-	//Re-initializes the Chip8
-	void onReset(wxCommandEvent& evt);
-	//Stops Chip8 cycling
-	void onPause(wxCommandEvent& evt);
-	//Displays file picker and passes path to helper function to save a state file
-	void onSaveState(wxCommandEvent& evt);
-	//Displays file picker and passes path to helper function to load a state file
-	void onLoadState(wxCommandEvent& evt);
-	//Calls "onClose" when exit menu item clicked
-	void onExit(wxCommandEvent& evt);
-	//Changes color of pixels based on menu item clicked
-	void onChangeScreenColors(wxCommandEvent& evt);
-	//Changes type of wave in Beeper based on menu item clicked
-	void onChangeWaveType(wxCommandEvent& evt);
-	//Displays numeric input and passes frequency to Beeper
-	void onChangeWaveNote(wxCommandEvent& evt);
-	//Silences sound machine
-	void onMute(wxCommandEvent& evt);
-	//Displays ControlPicker frame and passes pointer to keybinding map
-	void onChangeKeys(wxCommandEvent& evt);
-	//Displays MemoryViewer frame and sets memoryViewerOpen flag to true
-	void onMemoryViewer(wxCommandEvent& evt);
-	//Displays About dialog
-	void onAbout(wxCommandEvent& evt);
-	//Handles input using keybinding map
-	void onKeyDown(wxKeyEvent& evt);
-	//Contains the render timer, which updates SDL graphics, Beeper, memory viewer based on applicable flags
-	void onIdle(wxIdleEvent& evt);
-	//Sets memoryViewerOpen flag to false
-	void onMemoryViewerClose(wxCommandEvent& evt);
-	//Pauses Chip8 (if running) and calls it to cycle once
-	void onOneCycle(wxCommandEvent& evt);
-	//Displays numeric input, passes new Chip8 cpu rate to Chip8, and restarts cycling so new rate takes effect
-	void onEmulationSpeed(wxCommandEvent& evt);
-
-	wxDECLARE_EVENT_TABLE();
 
 private:
 	//Render timers
 	float renderRate = 16.66f;
 	std::chrono::time_point<std::chrono::steady_clock> lastTime;
 	std::chrono::duration<float, std::milli> accumulator{};
-
-	//Menu bar and menus
-	wxMenuBar* m_pMenuBar = nullptr;
-	wxMenu* m_pFile = nullptr;
-	wxMenu* m_pGraphics = nullptr;
-	wxMenu* m_pScreenColors = nullptr;
-	wxMenu* m_pSound = nullptr;
-	wxMenu* m_pWaveType = nullptr;
-	wxMenu* m_pEmulation = nullptr;
-	wxMenu* m_pHelp = nullptr;
 
 	//SDL window, handles graphics
 	SDL_Window* sdlWindow = NULL;
@@ -116,8 +55,6 @@ private:
 	//Keybinding map (index of Chip-8 input as key, unicode value of key as value)
 	std::map<int, int> keybindings;
 
-	//Memory viewer
-	MemoryViewer* memViewer = nullptr;
 	//Memory viewer open flag
 	bool memoryViewerOpen = false;
 	//Setter for memory viewer flag
@@ -135,7 +72,4 @@ private:
 	void loadChip8State(std::string filemane);
 	//Render helper
 	void drawScreen();
-
-	//wxEvent IDs
-	enum eventIDs { openROMID, resetID, pauseID, resumeID, saveStateID, loadStateID, exitID, gPID, aPID, wOBID, bOWID, ccPixelID, ccBackID, sineID, squareID, noteID, muteID, changeKeysID, memoryViewerID, emulationSpeedID, oneCycleID, aboutID };
 };

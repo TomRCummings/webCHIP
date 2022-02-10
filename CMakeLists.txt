@@ -11,18 +11,6 @@ set(SRC
 	src/cMain.h
 	src/chip8.cpp
 	src/chip8.h
-	src/GUI/controlPicker.cpp
-	src/GUI/controlPicker.h
-	src/GUI/counterListCtrl.cpp
-	src/GUI/counterListCtrl.h
-	src/GUI/memListCtrl.cpp
-	src/GUI/memListCtrl.h
-	src/GUI/memoryViewer.cpp
-	src/GUI/memoryViewer.h
-	src/GUI/regListCtrl.cpp
-	src/GUI/regListCtrl.h
-	src/GUI/stackListCtrl.cpp
-	src/GUI/stackListCtrl.h
 	src/Sound/beeper.cpp
 	src/Sound/beeper.h
 	src/Utility/hexPrint.cpp
@@ -35,16 +23,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(Chipulator ${SRC})
 
-SET(wxWidgets_ROOT_DIR "C:/Users/Ryan/source/libs/wx315")
-find_package(wxWidgets REQUIRED COMPONENTS net core base)
-
-if(wxWidgets_FOUND)
-	target_include_directories(Chipulator PRIVATE ${wxWidgets_INCLUDE_DIRS})
-	target_link_libraries(Chipulator PRIVATE ${wxWidgets_LIBRARIES})
-else()
-	message(FATAL_ERROR "wxWidgets not found!")
-endif()
- 
 find_package(SDL2 REQUIRED)
 
 if(SDL2_FOUND)
